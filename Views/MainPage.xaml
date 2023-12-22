@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:objectmodel="clr-namespace:SampleApp.ObjectModel"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             x:Class="SampleApp.Views.MainPage"
+             x:DataType="objectmodel:MainViewModel">
+
+    <ContentPage.Resources>
+
+        <x:Double x:Key="ColorBorderWidth">2.0</x:Double>
+        <x:Double x:Key="ColorItemWidth">42</x:Double>
+        <x:Double x:Key="ColorDiameter">40</x:Double>
+        <Color x:Key="SelectedBorderColor">Grey</Color>
+
+        <Style x:Key="PaletteColorStyle" 
+               TargetType="Ellipse"
+               x:DataType="objectmodel:PaletteColor">
+            <Setter Property="Margin"
+                    Value="0"/>
+            <Setter Property="HeightRequest"
+                    Value="{StaticResource ColorDiameter}"/>
+            <Setter Property="WidthRequest"
+                    Value="{StaticResource ColorDiameter}"/>
+            <Setter Property="Stroke"
+                    Value="{AppThemeBinding Light=Black, Dark=WhiteSmoke}"/>
+            <Setter Property="StrokeThickness"
+                    Value="{StaticResource ColorBorderWidth}"/>
+            <Setter Property="Fill"
+                    Value="{Binding Color}"/>
+        </Style>
+
+        <Style x:Key="ColorBorderStyle" 
+               TargetType="Rectangle"
+               >
+            <Setter Property="StrokeLineJoin"
+                    Value="Round"/>
+            <Setter Property="StrokeThickness"
+                    Value="{StaticResource ColorBorderWidth}"/>
+        </Style>
+
+         <DataTemplate x:Key="ColorItemTemplate"
+                     x:DataType="objectmodel:PaletteColor">
+            <Grid Margin="0"
+                 Padding="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Rectangle Grid.Column="0"
+                          Stroke="Transparent"
+                          Style="{StaticResource ColorBorderStyle}"
+                          />
+                <Ellipse Grid.Column="0" 
+                        Style="{StaticResource PaletteColorStyle}"/>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="SelectedColorItemTemplate"
+                       x:DataType="objectmodel:PaletteColor">
+            <Grid Margin="0"
+                  Padding="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Rectangle Grid.Column="0"
+                           Style="{StaticResource ColorBorderStyle}"
+                           Stroke="{StaticResource Gray200Brush}"
+                           />
+                <Ellipse Grid.Column="0" 
+                         Style="{StaticResource PaletteColorStyle}"/>
+            </Grid>
+        </DataTemplate>
+
+
+        <Style x:Key="PaletteListView"
+               TargetType="syncfusion:SfListView"
+               x:DataType="objectmodel:MainViewModel"
+               >
+            <Setter Property="Orientation"
+                    Value="Horizontal"/>
+            <Setter Property="Margin"
+                    Value="0"/>
+            <Setter Property="ScrollBarVisibility"
+                    Value="Never"/>
+            <Setter Property="AutoFitMode"
+                    Value="None"/>
+            <Setter Property="SelectionMode"
+                    Value="Single"/>
+            <Setter Property="HorizontalOptions"
+                    Value="Fill"/>
+            <Setter Property="ItemsSource"
+                    Value="{Binding Palette, Mode=TwoWay}"/>
+            <Setter Property="ItemTemplate"
+                    Value="{StaticResource ColorItemTemplate}"/>
+            <Setter Property="SelectedItem"
+                    Value="{Binding Palette.SelectedItem}"/>
+            <Setter Property="SelectedItemTemplate"
+                    Value="{StaticResource SelectedColorItemTemplate}"/>
+            <Setter Property="HeightRequest"
+                    Value="{StaticResource ColorItemWidth}"/>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto, Auto, Auto, Auto"
+          RowSpacing="5">
+        <syncfusion:SfListView Grid.Row="0"
+                               x:Name="Colors"
+                               Style="{StaticResource PaletteListView}"
+                               SelectionMode="Single"
+                               HorizontalOptions="Center"
+                               SelectionChanged="SfListView_SelectionChanged"
+                               />
+        <Button Grid.Row="1" 
+                Text="Reset SelectedItem" 
+                Command="{Binding Reset}"
+                HorizontalOptions="Center"
+                ToolTipProperties.Text="Reset the selected color to the first color"
+                />
+
+        <Grid Grid.Row="2"
+              RowDefinitions="Auto, Auto"
+              ColumnDefinitions="Auto, Auto"
+              RowSpacing="5"
+              ColumnSpacing="5"
+              HorizontalOptions="Center"
+              >
+            <Label Grid.Row="0" Grid.Column="0" 
+                   Text="SelectionChanged"
+                   VerticalOptions="Fill"
+                   VerticalTextAlignment="Center"
+                   />
+            <Grid Grid.Row="0" Grid.Column="1" 
+                  Margin="0"
+                  Padding="0"
+                  ToolTipProperties.Text="The SelectedItem reported by SfListView.SelectionChanged"
+                  ColumnDefinitions="Auto">
+                <Rectangle Stroke="Transparent"
+                           Style="{StaticResource ColorBorderStyle}"
+                           />
+                <Ellipse BindingContext="{Binding Selection}"
+                         Style="{StaticResource PaletteColorStyle}"/>
+            </Grid>
+
+            <Label Grid.Row="1" Grid.Column="0" 
+                  Text="SelectedItem"
+                  VerticalOptions="Fill"
+                  VerticalTextAlignment="Center"
+                  />
+            <Grid Grid.Row="1" Grid.Column="1" 
+                 Margin="0"
+                 Padding="0"
+                 ToolTipProperties.Text="The SfListView.SelectedItem"
+                 ColumnDefinitions="Auto">
+                <Rectangle Stroke="Transparent"
+                          Style="{StaticResource ColorBorderStyle}"
+                          />
+                <Ellipse BindingContext="{Binding Selection}"
+                        Style="{StaticResource PaletteColorStyle}"/>
+            </Grid>
+
+        </Grid>
+    </Grid>
+</ContentPage>
